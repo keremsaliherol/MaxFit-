@@ -1,0 +1,124 @@
+﻿@model Maxfit_.Models.Member
+
+@{
+    ViewData["Title"] = "Update Member Information";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-sm-12 col-xl-8">
+            <div class="bg-secondary rounded h-100 p-4 border border-info">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0 text-info"><i class="fa fa-user-edit me-2"></i>Update Member Information</h6>
+                    <a asp-action="Index" class="btn btn-outline-info btn-sm">Back to List</a>
+                </div>
+
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <input type="hidden" asp-for="MemberId" />
+                    <input type="hidden" asp-for="RegisterDate" />
+                    <input type="hidden" asp-for="PhotoUrl" />
+
+                    <!-- Profile Photo Upload -->
+                    <div class="text-center mb-4">
+                        @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+                        {
+                            <img id="photoPreview" src="@Model.PhotoUrl" class="rounded-circle mb-2"
+                                style="width: 100px; height: 100px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img id="photoPreview" src="/img/user.jpg" class="rounded-circle mb-2"
+                                style="width: 100px; height: 100px; object-fit: cover;">
+                        }
+                        <div class="mb-2">
+                            <label for="profilePhoto" class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-camera"></i> Change Photo
+                            </label>
+                            <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" class="d-none"
+                                onchange="previewPhoto(this)">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label">First Name</label>
+                            <input asp-for="FirstName" class="form-control bg-dark text-white border-0" required>
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label">Last Name</label>
+                            <input asp-for="LastName" class="form-control bg-dark text-white border-0" required>
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Gender" class="form-label">Gender</label>
+                            <select asp-for="Gender" class="form-select bg-dark text-white border-0">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="BirthDate" class="form-label">Birth Date</label>
+                            <input asp-for="BirthDate" type="date" class="form-control bg-dark text-white border-0">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <input asp-for="Phone" class="form-control bg-dark text-white border-0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" type="email" class="form-control bg-dark text-white border-0">
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label asp-for="Address" class="form-label">Full Address</label>
+                            <textarea asp-for="Address" class="form-control bg-dark text-white border-0"
+                                rows="2"></textarea>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="MembershipTypeId" class="form-label">Membership Plan</label>
+                            <select asp-for="MembershipTypeId" class="form-select bg-dark text-white border-0"
+                                asp-items="ViewBag.MembershipTypeId">
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsActive">
+                                <label class="form-check-label" asp-for="IsActive">Member is Active</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-info py-3 w-100 fw-bold text-uppercase">
+                            <i class="fa fa-sync-alt me-2"></i>Update Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+        <script>
+            function previewPhoto(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#photoPreview').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
+}

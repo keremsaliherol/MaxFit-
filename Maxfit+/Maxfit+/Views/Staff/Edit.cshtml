@@ -1,0 +1,85 @@
+﻿@model Maxfit_.Models.Staff
+
+@{
+    ViewData["Title"] = "Update Staff Information";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-sm-12 col-xl-8">
+            <div class="bg-secondary rounded h-100 p-4 border border-info">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0 text-info"><i class="fa fa-user-edit me-2"></i>Update Staff Information</h6>
+                    @if (!User.IsInRole("Staff"))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-info btn-sm">Back to List</a>
+                    }
+                </div>
+
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <input type="hidden" asp-for="StaffId" />
+                    <input type="hidden" asp-for="HireDate" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label">First Name</label>
+                            <input asp-for="FirstName" class="form-control bg-dark text-white border-0" required>
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label">Last Name</label>
+                            <input asp-for="LastName" class="form-control bg-dark text-white border-0" required>
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Position" class="form-label">Position / Role</label>
+                            <input asp-for="Position" class="form-control bg-dark text-white border-0" required>
+                            <span asp-validation-for="Position" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Phone" class="form-label">Phone Number</label>
+                            <input asp-for="Phone" class="form-control bg-dark text-white border-0">
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label">Email Address</label>
+                            <input asp-for="Email" type="email" class="form-control bg-dark text-white border-0">
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsActive">
+                                    <label class="form-check-label" asp-for="IsActive">Staff is Currently Active</label>
+                                </div>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="IsActive" />
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-info py-3 w-100 fw-bold text-uppercase">
+                            <i class="fa fa-sync-alt me-2"></i>Update Staff Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

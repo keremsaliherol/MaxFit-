@@ -1,0 +1,99 @@
+﻿@model Maxfit_.Models.Class
+
+@{
+    ViewData["Title"] = "Create New Class";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-sm-12 col-xl-8">
+            <div class="bg-secondary rounded h-100 p-4 border border-primary">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0 text-primary"><i class="fa fa-plus me-2"></i>Create New Class</h6>
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">Back to List</a>
+                </div>
+
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label">Class Name</label>
+                            <input asp-for="Name" class="form-control bg-dark text-white border-0" required
+                                placeholder="e.g. Crossfit">
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="GenderRestriction" class="form-label">Gender Restriction</label>
+                            <select asp-for="GenderRestriction" class="form-select bg-dark text-white border-0">
+                                <option value="Hybrid">Hybrid / Everyone</option>
+                                <option value="Female">Female Only</option>
+                                <option value="Male">Male Only</option>
+                            </select>
+                            <span asp-validation-for="GenderRestriction" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DefaultDurationMinutes" class="form-label">Duration (Minutes)</label>
+                            <input asp-for="DefaultDurationMinutes" type="number"
+                                class="form-control bg-dark text-white border-0" placeholder="e.g. 60">
+                            <span asp-validation-for="DefaultDurationMinutes" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                                <label class="form-check-label" asp-for="IsActive">Set as Active</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control bg-dark text-white border-0" rows="3"
+                                placeholder="Brief details about the class..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Class Image</label>
+                            <input type="file" name="ImageFile" id="ImageFile"
+                                class="form-control bg-dark text-white border-0" accept="image/*" />
+                            <small class="text-muted">Upload an image for this class (optional)</small>
+                            <div id="imagePreview" class="mt-3" style="display:none;">
+                                <img id="preview" src="#" alt="Preview" class="img-fluid rounded"
+                                    style="max-height: 200px;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary py-3 w-100 fw-bold text-uppercase">
+                            <i class="fa fa-save me-2"></i>Save Class
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Image preview
+        document.getElementById('ImageFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('preview').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

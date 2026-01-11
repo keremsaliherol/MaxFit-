@@ -1,0 +1,198 @@
+@startuml Maxfit_Conceptual_Data_Model
+
+' Styling
+skinparam class {
+    BackgroundColor #E8F5E9
+    BorderColor #43A047
+    FontSize 11
+    ArrowColor #1976D2
+}
+
+skinparam package {
+    BackgroundColor #FFF3E0
+    BorderColor #FF6F00
+    FontSize 12
+}
+
+title Maxfit+ Fitness Management System - Conceptual Data Model
+
+' Subject Area 1: User Management & Security
+package "Subject Area 1\nUser Management & Security" {
+    class IdentityUser {
+        + UserId
+        + Email
+        + PasswordHash
+    }
+    
+    class IdentityRole {
+        + RoleId
+        + RoleName
+    }
+    
+    class UserRole {
+        + UserId
+        + RoleId
+    }
+}
+
+' Subject Area 2: Membership Management
+package "Subject Area 2\nMembership Management" {
+    class Member {
+        + MemberId
+        + FirstName
+        + LastName
+        + Email
+        + Phone
+        + BirthDate
+        + Gender
+        + RegisterDate
+        + IsActive
+        + PhotoUrl
+    }
+    
+    class MembershipType {
+        + MembershipTypeId
+        + Name
+        + Description
+        + DurationMonths
+        + Price
+    }
+    
+    class Membership {
+        + MembershipId
+        + MemberId
+        + MembershipTypeId
+        + StartDate
+        + EndDate
+        + IsActive
+    }
+}
+
+' Subject Area 3: Class & Session Management
+package "Subject Area 3\nClass & Session Management" {
+    class Class {
+        + ClassId
+        + ClassName
+        + Description
+        + ClassType
+    }
+    
+    class CourseSession {
+        + CourseSessionId
+        + ClassId
+        + RoomId
+        + TrainerId
+        + StartTime
+        + EndTime
+        + Capacity
+        + IsCanceled
+    }
+    
+    class Room {
+        + RoomId
+        + RoomName
+        + Capacity
+        + Floor
+    }
+    
+    class Staff {
+        + StaffId
+        + FirstName
+        + LastName
+        + Position
+        + Email
+        + Phone
+        + HireDate
+        + IsActive
+    }
+    
+    class CourseRegistration {
+        + CourseRegistrationId
+        + MemberId
+        + CourseSessionId
+        + RegistrationDate
+        + Status
+    }
+}
+
+' Subject Area 4: Payment & Financial Management
+package "Subject Area 4\nPayment & Financial" {
+    class Payment {
+        + PaymentId
+        + MemberId
+        + MembershipId
+        + Amount
+        + PaymentDate
+        + PaymentMethod
+        + Status
+        + TransactionId
+    }
+}
+
+' Subject Area 5: Attendance Tracking
+package "Subject Area 5\nAttendance & Analytics" {
+    class CheckIn {
+        + CheckInId
+        + MemberId
+        + CheckInTime
+        + CheckOutTime
+    }
+    
+    class MemberNotification {
+        + NotificationId
+        + MemberId
+        + Message
+        + SentDate
+        + IsRead
+    }
+}
+
+' Subject Area 6: Equipment Management
+package "Subject Area 6\nEquipment Management" {
+    class Equipment {
+        + EquipmentId
+        + Name
+        + Category
+        + PurchaseDate
+        + Status
+    }
+    
+    class EquipmentMaintenance {
+        + MaintenanceId
+        + EquipmentId
+        + MaintenanceDate
+        + Description
+        + Cost
+    }
+}
+
+' Relationships for User Management
+IdentityUser "1" -- "0..*" UserRole
+IdentityRole "1" -- "0..*" UserRole
+IdentityUser "1" -- "0..1" Member : "links to"
+IdentityUser "1" -- "0..1" Staff : "links to"
+
+' Relationships for Membership Management
+Member "1" -- "0..*" Membership
+MembershipType "1" -- "0..*" Membership
+MembershipType "1" -- "0..*" Member : "current package"
+
+' Relationships for Class Management
+Class "1" -- "0..*" CourseSession
+Room "1" -- "0..*" CourseSession
+Staff "1" -- "0..*" CourseSession : "trains"
+CourseSession "1" -- "0..*" CourseRegistration
+Member "1" -- "0..*" CourseRegistration
+
+' Relationships for Payment
+Member "1" -- "0..*" Payment
+MembershipType "1" -- "0..*" Payment
+
+' Relationships for Attendance
+Member "1" -- "0..*" CheckIn
+Member "1" -- "0..*" MemberNotification
+
+' Relationships for Equipment
+Equipment "1" -- "0..*" EquipmentMaintenance
+
+@enduml

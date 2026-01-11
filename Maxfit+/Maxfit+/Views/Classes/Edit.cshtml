@@ -1,0 +1,68 @@
+﻿@model Maxfit_.Models.Class
+
+@{
+    ViewData["Title"] = "Edit Class";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-sm-12 col-xl-8">
+            <div class="bg-secondary rounded h-100 p-4 border border-primary">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0 text-primary"><i class="fa fa-edit me-2"></i>Edit Class: @Model.Name</h6>
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">Back to List</a>
+                </div>
+
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <input type="hidden" asp-for="ClassId" />
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Name" class="form-label">Class Name</label>
+                            <input asp-for="Name" class="form-control bg-dark text-white border-0">
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="GenderRestriction" class="form-label">Gender Restriction</label>
+                            <select asp-for="GenderRestriction" class="form-select bg-dark text-white border-0">
+                                <option value="Hybrid">Hybrid / Everyone</option>
+                                <option value="Female">Female Only</option>
+                                <option value="Male">Male Only</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DefaultDurationMinutes" class="form-label">Duration (Minutes)</label>
+                            <input asp-for="DefaultDurationMinutes" type="number" class="form-control bg-dark text-white border-0">
+                        </div>
+
+                        <div class="col-md-6 mb-3 d-flex align-items-end">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" asp-for="IsActive">
+                                <label class="form-check-label" asp-for="IsActive">Is Active</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control bg-dark text-white border-0" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary py-3 w-100 fw-bold text-uppercase">
+                            <i class="fa fa-sync me-2"></i>Update Class Information
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

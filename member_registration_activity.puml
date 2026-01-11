@@ -1,0 +1,103 @@
+@startuml Member_Registration_Activity_Diagram
+
+skinparam activityBorderColor #43A047
+skinparam activityBackgroundColor #E8F5E9
+skinparam activityDiamondBorderColor #FF6F00
+skinparam activityDiamondBackgroundColor #FFF3E0
+
+title Member Registration - Activity Diagram (Maxfit+)
+
+start
+
+:Admin/Staff opens registration form;
+
+:Enter member personal information
+(First Name, Last Name, Email, Phone);
+
+:Enter additional details
+(Birth Date, Gender, Address);
+
+if (Upload profile photo?) then (yes)
+  :Select and upload photo file;
+  :Validate file type and size;
+  if (Photo valid?) then (yes)
+    :Save photo to file storage;
+  else (no)
+    :Show error message
+    "Invalid photo format";
+    stop
+  endif
+else (no)
+  :Use default avatar;
+endif
+
+:Select membership package type;
+
+note right
+  - Monthly (30 days)
+  - Quarterly (90 days)
+  - Semi-annual (180 days)
+  - Annual (365 days)
+end note
+
+:Calculate membership dates
+(Start Date, End Date);
+
+:Display membership price;
+
+if (Process payment now?) then (yes)
+  fork
+    :Select payment method;
+    note right
+      - Cash
+      - Credit Card
+      - Bank Transfer
+      - Online Payment
+    end note
+  fork again
+    :Enter payment amount;
+  end fork
+  
+  :Record payment transaction;
+  
+  if (Payment successful?) then (yes)
+    :Generate payment receipt;
+    :Update membership status to "Active";
+  else (no)
+    :Show payment error message;
+    :Set membership status to "Pending Payment";
+  endif
+else (no)
+  :Set membership status to "Pending Payment";
+endif
+
+:Create IdentityUser account
+(Email, Password Hash, Role = "Member");
+
+:Link User account to Member record;
+
+:Send welcome email notification;
+
+note left
+  Email contains:
+  - Login credentials
+  - Membership details
+  - Facility guidelines
+end note
+
+if (Auto check-in for first visit?) then (yes)
+  :Create first check-in record;
+else (no)
+  :Member will check-in manually;
+endif
+
+:Display success message
+"Member registered successfully";
+
+:Generate member ID card/QR code;
+
+:Save all changes to database;
+
+stop
+
+@enduml

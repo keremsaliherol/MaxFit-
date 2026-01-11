@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Maxfit_.Models.Staff>
+
+@{
+    ViewData["Title"] = "Staff Management";
+}
+
+<div class="container-fluid pt-4 px-4">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa fa-check-circle me-2"></i>
+            <strong>Success!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-primary"><i class="fa fa-user-tie me-2"></i>Staff Management</h6>
+            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus me-2"></i>Add New Staff</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Position</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Hire Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-white fw-bold">
+                                <i class="fa fa-user-circle me-2 text-info"></i>@item.FirstName @item.LastName
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark py-2 px-3">@item.Position</span>
+                            </td>
+                            <td class="text-white">@item.Email</td>
+                            <td class="text-white">@item.Phone</td>
+                            <td class="text-muted">@item.HireDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success py-2 px-3">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger py-2 px-3">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@item.StaffId"
+                                        title="Edit Staff">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.StaffId"
+                                        title="View Details">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.StaffId"
+                                        title="Delete Staff">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

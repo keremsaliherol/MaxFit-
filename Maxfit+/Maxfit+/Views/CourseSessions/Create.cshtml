@@ -1,0 +1,285 @@
+﻿@model Maxfit_.Models.CourseSession
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary rounded h-100 p-4">
+        <h6 class="mb-4 text-white"><i class="fa fa-plus me-2 text-primary"></i>Create Weekly Course Schedule</h6>
+        <form asp-action="CreateWeekly" method="post">
+            @* 'All' yaparak tüm gizli hataların (tarih formatı vb.) görünmesini sağlıyoruz *@
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="row">
+                <!-- Left Column: Class, Room, Trainer -->
+                <div class="col-md-5">
+                    <div class="form-floating mb-3">
+                        <select asp-for="ClassId" class="form-select bg-dark text-white" asp-items="ViewBag.ClassId">
+                            <option value="">-- Select Class --</option>
+                        </select>
+                        <label>Class Name</label>
+                        <span asp-validation-for="ClassId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <select asp-for="RoomId" class="form-select bg-dark text-white" asp-items="ViewBag.RoomId">
+                            <option value="">-- Select Room --</option>
+                        </select>
+                        <label>Room Name</label>
+                        <span asp-validation-for="RoomId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <select asp-for="TrainerId" class="form-select bg-dark text-white"
+                            asp-items="ViewBag.TrainerId">
+                            <option value="">-- Select Trainer --</option>
+                        </select>
+                        <label>Trainer Name</label>
+                        <span asp-validation-for="TrainerId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Capacity" type="number" class="form-control bg-dark text-white"
+                            placeholder="Capacity">
+                        <label>Capacity</label>
+                        <span asp-validation-for="Capacity" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Right Column: Time Selection & Weekly Grid -->
+                <div class="col-md-7">
+                    <!-- Time Selection -->
+                    <div class="bg-dark rounded p-3 mb-3">
+                        <h6 class="text-primary mb-3"><i class="fa fa-clock me-2"></i>Time Selection</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Start Time</label>
+                                <input type="time" id="startTime" name="startTime"
+                                    class="form-control bg-secondary text-white border-0" value="09:00" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">End Time</label>
+                                <input type="time" id="endTime" name="endTime"
+                                    class="form-control bg-secondary text-white border-0" value="10:00" required>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mb-0">
+                            <i class="fa fa-info-circle me-2"></i>
+                            <small>Duration: <strong id="duration">1 hour</strong></small>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Days Selection -->
+                    <div class="bg-dark rounded p-3">
+                        <h6 class="text-primary mb-3"><i class="fa fa-calendar-week me-2"></i>Select Days of Week</h6>
+                        <div class="row g-2">
+                            <div class="col-6 col-md-4">
+                                <div class="form-check form-check-lg bg-secondary rounded p-3 text-center day-selector">
+                                    <input class="form-check-input day-checkbox" type="checkbox" name="selectedDays"
+                                        value="1" id="monday">
+                                    <label class="form-check-label text-white fw-bold d-block" for="monday">
+                                        <i class="fa fa-calendar-day d-block mb-1"></i>
+                                        Monday
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check form-check-lg bg-secondary rounded p-3 text-center day-selector">
+                                    <input class="form-check-input day-checkbox" type="checkbox" name="selectedDays"
+                                        value="2" id="tuesday">
+                                    <label class="form-check-label text-white fw-bold d-block" for="tuesday">
+                                        <i class="fa fa-calendar-day d-block mb-1"></i>
+                                        Tuesday
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check form-check-lg bg-secondary rounded p-3 text-center day-selector">
+                                    <input class="form-check-input day-checkbox" type="checkbox" name="selectedDays"
+                                        value="3" id="wednesday">
+                                    <label class="form-check-label text-white fw-bold d-block" for="wednesday">
+                                        <i class="fa fa-calendar-day d-block mb-1"></i>
+                                        Wednesday
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check form-check-lg bg-secondary rounded p-3 text-center day-selector">
+                                    <input class="form-check-input day-checkbox" type="checkbox" name="selectedDays"
+                                        value="4" id="thursday">
+                                    <label class="form-check-label text-white fw-bold d-block" for="thursday">
+                                        <i class="fa fa-calendar-day d-block mb-1"></i>
+                                        Thursday
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check form-check-lg bg-secondary rounded p-3 text-center day-selector">
+                                    <input class="form-check-input day-checkbox" type="checkbox" name="selectedDays"
+                                        value="5" id="friday">
+                                    <label class="form-check-label text-white fw-bold d-block" for="friday">
+                                        <i class="fa fa-calendar-day d-block mb-1"></i>
+                                        Friday
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check form-check-lg bg-secondary rounded p-3 text-center day-selector">
+                                    <input class="form-check-input day-checkbox" type="checkbox" name="selectedDays"
+                                        value="6" id="saturday">
+                                    <label class="form-check-label text-white fw-bold d-block" for="saturday">
+                                        <i class="fa fa-calendar-day d-block mb-1"></i>
+                                        Saturday
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="form-check form-check-lg bg-secondary rounded p-3 text-center day-selector">
+                                    <input class="form-check-input day-checkbox" type="checkbox" name="selectedDays"
+                                        value="0" id="sunday">
+                                    <label class="form-check-label text-white fw-bold d-block" for="sunday">
+                                        <i class="fa fa-calendar-day d-block mb-1"></i>
+                                        Sunday
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <small class="text-muted">Selected: <strong id="selectedDaysCount">0</strong> days</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly Repeat Options -->
+            <div class="row mb-3 mt-3">
+                <div class="col-12">
+                    <div class="bg-dark rounded p-3">
+                        <h6 class="text-primary mb-3">
+                            <i class="fa fa-sync-alt me-2"></i>Repeat Duration
+                        </h6>
+
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <label for="weeksToRepeat" class="form-label text-white">
+                                    Number of Weeks
+                                </label>
+                                <input type="number" class="form-control bg-secondary text-white border-0"
+                                    id="weeksToRepeat" name="weeksToRepeat" value="12" min="1" max="52">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-success mb-0 mt-3 mt-md-0">
+                                    <i class="fa fa-check-circle me-2"></i>
+                                    <small>Will create <strong id="totalSessions">0</strong> sessions over <strong
+                                            id="weeksDisplay">12</strong> weeks</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-floating mb-4">
+                <textarea asp-for="Notes" class="form-control bg-dark text-white" placeholder="Leave a note here"
+                    style="height: 100px;"></textarea>
+                <label>Notes</label>
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex border-top pt-3">
+                <button type="submit" class="btn btn-primary px-4" id="createBtn">
+                    <i class="fa fa-save me-2"></i>Create Weekly Schedule
+                </button>
+                <a asp-action="WeeklySchedule" class="btn btn-outline-light ms-2">Back to Schedule</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Calculate duration
+        function updateDuration() {
+            const start = document.getElementById('startTime').value;
+            const end = document.getElementById('endTime').value;
+
+            if (start && end) {
+                const startDate = new Date('2000-01-01 ' + start);
+                const endDate = new Date('2000-01-01 ' + end);
+                const diff = (endDate - startDate) / (1000 * 60); // minutes
+
+                if (diff > 0) {
+                    const hours = Math.floor(diff / 60);
+                    const minutes = diff % 60;
+                    let durationText = '';
+                    if (hours > 0) durationText += hours + ' hour' + (hours > 1 ? 's' : '');
+                    if (minutes > 0) durationText += (hours > 0 ? ' ' : '') + minutes + ' min';
+                    document.getElementById('duration').textContent = durationText;
+                } else {
+                    document.getElementById('duration').textContent = 'Invalid time range';
+                }
+            }
+        }
+
+        // Update selected days count and total sessions
+        function updateSelections() {
+            const selectedDays = document.querySelectorAll('.day-checkbox:checked').length;
+            const weeks = parseInt(document.getElementById('weeksToRepeat').value) || 0;
+            const totalSessions = selectedDays * weeks;
+
+            document.getElementById('selectedDaysCount').textContent = selectedDays;
+            document.getElementById('totalSessions').textContent = totalSessions;
+        }
+
+        // Update weeks display
+        function updateWeeksDisplay() {
+            document.getElementById('weeksDisplay').textContent = document.getElementById('weeksToRepeat').value;
+            updateSelections();
+        }
+
+        // Day selector styling
+        document.querySelectorAll('.day-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const parent = this.closest('.day-selector');
+                if (this.checked) {
+                    parent.classList.add('bg-primary', 'border', 'border-primary');
+                    parent.classList.remove('bg-secondary');
+                } else {
+                    parent.classList.remove('bg-primary', 'border', 'border-primary');
+                    parent.classList.add('bg-secondary');
+                }
+                updateSelections();
+            });
+        });
+
+        // Event listeners
+        document.getElementById('startTime').addEventListener('change', updateDuration);
+        document.getElementById('endTime').addEventListener('change', updateDuration);
+        document.getElementById('weeksToRepeat').addEventListener('input', updateWeeksDisplay);
+
+        // Initial calculations
+        updateDuration();
+        updateSelections();
+    </script>
+
+    <style>
+        .day-selector {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .day-selector:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .day-selector .form-check-input {
+            display: none;
+        }
+
+        .form-check-lg {
+            min-height: 80px;
+        }
+    </style>
+}

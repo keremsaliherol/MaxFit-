@@ -1,0 +1,103 @@
+@model Maxfit_.Models.Room
+
+@{
+    ViewData["Title"] = "Room Details";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-secondary rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="mb-0 text-white">
+                        <i class="fa fa-door-open me-2 text-primary"></i>@Model.Name
+                    </h5>
+                    <div class="btn-group">
+                        <a asp-action="Edit" asp-route-id="@Model.RoomId" class="btn btn-sm btn-warning">
+                            <i class="fa fa-edit me-1"></i>Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-sm btn-outline-light">
+                            <i class="fa fa-arrow-left me-1"></i>Back
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-dark rounded p-3">
+                            <label class="text-muted small">Capacity</label>
+                            <h4 class="text-primary mb-0">
+                                <i class="fa fa-users me-2"></i>@Model.Capacity people
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="bg-dark rounded p-3">
+                            <label class="text-muted small">Status</label>
+                            <h4 class="mb-0">
+                                @if (Model.IsActive)
+                                {
+                                    <span class="badge bg-success fs-6">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger fs-6">Inactive</span>
+                                }
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <div class="bg-dark rounded p-3">
+                            <label class="text-muted small">Description</label>
+                            <p class="text-white mb-0">@(Model.Description ?? "No description provided")</p>
+                        </div>
+                    </div>
+
+                    @if (Model.CourseSessions.Any())
+                    {
+                        <div class="col-12">
+                            <div class="bg-dark rounded p-3">
+                                <h6 class="text-white mb-3">
+                                    <i class="fa fa-calendar me-2 text-info"></i>Scheduled Sessions
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered text-white mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Class</th>
+                                                <th>Date and Time</th>
+                                                <th>Capacity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var session in Model.CourseSessions.OrderBy(s =>
+                                           s.StartTime).Take(10))
+                                            {
+                                                <tr>
+                                                    <td>@session.Class?.Name</td>
+                                                    <td>@session.StartTime.ToString("MMM dd, yyyy HH:mm") -
+                                                        @session.EndTime.ToString("HH:mm")</td>
+                                                    <td><span class="badge bg-info">@session.Capacity</span></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <div class="alert alert-info text-center mb-0">
+                                <i class="fa fa-info-circle me-2"></i>No sessions scheduled in this room yet.
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

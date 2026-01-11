@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Maxfit_.Models.Class>
+
+@{
+    ViewData["Title"] = "Class Management";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-primary"><i class="fa fa-dumbbell me-2"></i>Class Management</h6>
+            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus me-2"></i>Add New Class</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Class Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-primary fw-bold">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" class="rounded me-2"
+                                        style="width: 50px; height: 50px; object-fit: cover;" />
+                                }
+                                <i class="fa fa-running me-2"></i>@item.Name
+                            </td>
+                            <td class="text-white">
+                                @if (!string.IsNullOrEmpty(item.Description))
+                                {
+                                    <span>@(item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." :
+                                          item.Description)</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No description</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark py-2 px-3">
+                                    <i class="fa fa-clock me-1"></i>@item.DefaultDurationMinutes min
+                                </span>
+                            </td>
+                            <td>
+                                @{
+                                    var genderBadge = item.GenderRestriction switch
+                                    {
+                                        "Male" => "bg-primary",
+                                        "Female" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    };
+                                }
+                                <span class="badge @genderBadge py-2 px-3">@item.GenderRestriction</span>
+                            </td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success py-2 px-3">
+                                        <i class="fa fa-check-circle me-1"></i>Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger py-2 px-3">
+                                        <i class="fa fa-times-circle me-1"></i>Inactive
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@item.ClassId">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-light" asp-action="Details" asp-route-id="@item.ClassId">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-primary" asp-action="Delete" asp-route-id="@item.ClassId">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

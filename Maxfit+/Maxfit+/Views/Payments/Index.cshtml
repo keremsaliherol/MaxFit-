@@ -1,0 +1,135 @@
+@model IEnumerable<Maxfit_.Models.Payment>
+
+@{
+    ViewData["Title"] = "Payment Management";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary rounded shadow p-4">
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom border-primary">
+            <h5 class="mb-0 text-white">
+                <i class="fa fa-credit-card me-2 text-success"></i>Payment Management
+                @if (ViewBag.MemberName != null)
+                {
+                    <small class="text-muted">for @ViewBag.MemberName</small>
+                }
+            </h5>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fa fa-plus-circle me-1"></i>Record New Payment
+            </a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fa fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info text-center mb-0">
+                <i class="fa fa-info-circle me-2"></i>No payment records found.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table text-start align-middle table-bordered table-hover mb-0">
+                    <thead>
+                        <tr class="text-white border-bottom border-primary">
+                            <th scope="col">#</th>
+                            <th scope="col">Member</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Payment Date</th>
+                            <th scope="col">Method</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var payment in Model)
+                        {
+                            <tr>
+                                <td class="text-primary fw-bold">#@payment.PaymentId</td>
+                                <td>
+                                    <a asp-controller="Members" asp-action="Details" 
+                                       asp-route-id="@payment.MemberId" class="text-decoration-none text-info">
+                                        @payment.Member?.FirstName @payment.Member?.LastName
+                                    </a>
+                                </td>
+                                <td class="text-success fw-bold">$@payment.Amount.ToString("N2")</td>
+                                <td class="text-white">@payment.PaymentDate.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    <span class="badge bg-info text-dark">
+                                        @payment.PaymentMethod
+                                    </span>
+                                </td>
+                                <td>
+                                    @{
+                                        var statusBadge = payment.Status switch
+                                        {
+                                            "Completed" => "bg-success",
+                                            "Pending" => "bg-warning text-dark",
+                                            "Failed" => "bg-danger",
+                                            "Refunded" => "bg-info",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @statusBadge py-2 px-3">
+                                        @payment.Status
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Details" asp-route-id="@payment.PaymentId"
+                                           class="btn btn-sm btn-outline-primary" title="View Details">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@payment.PaymentId"
+                                           class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@payment.PaymentId"
+                                               class="btn btn-sm btn-outline-danger" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="border-top border-primary">
+                            <td colspan="2" class="text-end text-white fw-bold">
+                                <i class="fa fa-calculator me-2 text-success"></i>Total (Completed):
+                            </td>
+                            <td colspan="5">
+                                <span class="text-success fs-5 fw-bold">
+                                    $@Model.Where(p => p.Status == "Completed").Sum(p => p.Amount).ToString("N2")
+                                </span>
+                                <small class="text-muted ms-2">
+                                    (@Model.Count(p => p.Status == "Completed") payments)
+                                </small>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss success messages after 3 seconds
+        setTimeout(function () {
+            $('.alert-success').fadeOut('slow');
+        }, 3000);
+    </script>
+}

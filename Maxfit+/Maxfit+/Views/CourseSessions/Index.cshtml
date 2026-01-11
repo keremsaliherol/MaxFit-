@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Maxfit_.Models.CourseSession>
+
+@{
+    ViewData["Title"] = "Course Sessions";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-primary"><i class="fa fa-calendar-alt me-2"></i>Course Sessions Management</h6>
+            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus me-2"></i>Create New Session</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Class</th>
+                        <th scope="col">Date and Time</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Trainer</th>
+                        <th scope="col">Room</th>
+                        <th scope="col">Capacity</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-primary fw-bold">@item.Class?.Name</td>
+                            <td>
+                                <i class="fa fa-calendar me-1 text-info"></i>@item.StartTime.ToString("MMM dd, yyyy")
+                                <br />
+                                <small class="text-muted">
+                                    <i class="fa fa-clock me-1"></i>@item.StartTime.ToString("HH:mm") -
+                                    @item.EndTime.ToString("HH:mm")
+                                </small>
+                            </td>
+                            <td>
+                                @{
+                                    var duration = item.EndTime - item.StartTime;
+                                }
+                                <span class="badge bg-info text-dark">
+                                    @duration.TotalMinutes min
+                                </span>
+                            </td>
+                            <td>
+                                <i class="fa fa-user me-1 text-warning"></i>@item.Trainer?.FirstName @item.Trainer?.LastName
+                            </td>
+                            <td>
+                                <i class="fa fa-door-open me-1 text-success"></i>@item.Room?.Name
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-secondary py-2 px-3">@item.Capacity</span>
+                            </td>
+                            <td>
+                                @if (item.IsCanceled)
+                                {
+                                    <span class="badge bg-danger">Canceled</span>
+                                }
+                                else if (item.StartTime < DateTime.Now && item.EndTime > DateTime.Now)
+                                {
+                                    <span class="badge bg-success">In Progress</span>
+                                }
+                                else if (item.EndTime < DateTime.Now)
+                                {
+                                    <span class="badge bg-secondary">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info text-dark">Scheduled</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@item.CourseSessionId">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-light" asp-action="Details"
+                                        asp-route-id="@item.CourseSessionId">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-primary" asp-action="Delete"
+                                        asp-route-id="@item.CourseSessionId">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

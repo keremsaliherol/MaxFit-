@@ -1,0 +1,157 @@
+@startuml Class_Scheduling_Sequence_Diagram_Maxfit
+
+skinparam sequence {
+    ArrowColor #1976D2
+    ActorBorderColor #43A047
+    ActorBackgroundColor #E8F5E9
+    ParticipantBorderColor #FF6F00
+    ParticipantBackgroundColor #FFF3E0
+}
+
+title Class Scheduling with Conflict Detection Sequence Diagram (Maxfit+)
+
+actor "Admin/Staff" as Staff
+participant "Browser" as Browser
+participant "CourseSessionsController" as Controller
+participant "Class Scheduling Service" as Service
+participant "CourseSession Repository" as SessionRepo
+participant "Class Repository" as ClassRepo
+participant "Room Repository" as RoomRepo
+participant "Staff Repository" as StaffRepo
+database "SQL Server\nDatabase" as DB
+
+== Class Scheduling Process ==
+
+Staff -> Browser: Navigate to Create Session page
+activate Browser
+
+Browser -> Controller: GET /CourseSessions/Create
+activate Controller
+
+par Load Form Data
+    Controller -> ClassRepo: GetAllClassesAsync()
+    activate ClassRepo
+    ClassRepo -> DB: Query Classes
+    activate DB
+    DB --> ClassRepo: Classes list
+    deactivate DB
+    ClassRepo --> Controller: Classes
+    deactivate ClassRepo
+and
+    Controller -> RoomRepo: GetAllRoomsAsync()
+    activate RoomRepo
+    RoomRepo -> DB: Query Rooms
+    activate DB
+    DB --> RoomRepo: Rooms list
+    deactivate DB
+    RoomRepo --> Controller: Rooms
+    deactivate RoomRepo
+and
+    Controller -> StaffRepo: GetAllTrainersAsync()
+    activate StaffRepo
+    StaffRepo -> DB: Query Staff WHERE Position = 'Trainer'
+    activate DB
+    DB --> StaffRepo: Trainers list
+    deactivate DB
+    StaffRepo --> Controller: Trainers
+    deactivate StaffRepo
+end
+
+Controller --> Browser: Render create form
+deactivate Controller
+
+Browser --> Staff: Display form with dropdowns\n(Class, Room, Trainer, Time)
+deactivate Browser
+
+Staff -> Browser: Fill session details\n(ClassId, RoomId, TrainerId,\nStartTime, EndTime, Capacity)
+activate Browser
+
+Browser -> Controller: POST /CourseSessions/Create
+activate Controller
+
+Controller -> Controller: Validate input data\n(ModelState validation)
+
+alt Validation Failed
+    Controller --> Browser: Return form with errors
+    Browser --> Staff: Display validation errors
+    deactivate Browser
+    deactivate Controller
+else Validation Success
+    
+    Controller -> Service: CreateSessionWithConflictCheckAsync(sessionData)
+    activate Service
+    
+    == Conflict Detection ==
+    
+    par Check Trainer Availability
+        Service -> SessionRepo: GetTrainerSessionsAsync(trainerId, startTime, endTime)
+        activate SessionRepo
+        SessionRepo -> DB: Query CourseSessions WHERE\nTrainerId = X AND Time overlaps
+        activate DB
+        DB --> SessionRepo: Conflicting trainer sessions
+        deactivate DB
+        SessionRepo --> Service: Trainer sessions
+        deactivate SessionRepo
+        
+        alt Trainer Has Conflict
+            Service -> Service: Flag trainer conflict
+            note right
+              Trainer is already assigned
+              to another session at
+              this time
+            end note
+        end
+    and
+        Service -> SessionRepo: GetRoomSessionsAsync(roomId, startTime, endTime)
+        activate SessionRepo
+        SessionRepo -> DB: Query CourseSessions WHERE\nRoomId = X AND Time overlaps
+        activate DB
+        DB --> SessionRepo: Conflicting room sessions
+        deactivate DB
+        SessionRepo --> Service: Room sessions
+        deactivate SessionRepo
+        
+        alt Room Has Conflict
+            Service -> Service: Flag room conflict
+            note right
+              Room is already booked
+              for another session at
+              this time
+            end note
+        end
+    end
+    
+    alt Conflicts Detected
+        Service --> Controller: ConflictException with details
+        deactivate Service
+        Controller -> Controller: Add conflict errors to ModelState
+        Controller --> Browser: Return form with conflict warnings
+        deactivate Controller
+        Browser --> Staff: Display conflict errors:\n"Trainer/Room already booked"
+        deactivate Browser
+        
+    else No Conflicts
+        Service -> Service: Create CourseSession record\n(ClassId, RoomId, TrainerId,\nStartTime, EndTime, Capacity,\nIsCanceled = false)
+        
+        Service -> SessionRepo: AddAsync(courseSession)
+        activate SessionRepo
+        SessionRepo -> DB: INSERT INTO CourseSessions
+        activate DB
+        DB --> SessionRepo: Session saved
+        deactivate DB
+        SessionRepo --> Service: CourseSession record
+        deactivate SessionRepo
+        
+        Service --> Controller: Session created successfully
+        deactivate Service
+        
+        Controller -> Controller: Set success message
+        Controller --> Browser: Redirect to /CourseSessions/Index
+        deactivate Controller
+        
+        Browser --> Staff: Display success message\n"Class session scheduled successfully"
+        deactivate Browser
+    end
+end
+
+@enduml

@@ -1,0 +1,78 @@
+@model IEnumerable<Maxfit_.Models.Room>
+
+@{
+    ViewData["Title"] = "Rooms Management";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-primary"><i class="fa fa-door-open me-2"></i>Rooms Management</h6>
+            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus me-2"></i>Add New Room</a>
+        </div>
+
+        @if (!Model.Any())
+        {
+                <div class="alert alert-info text-center mb-0">
+                    <i class="fa fa-info-circle me-2"></i>No rooms found. Create your first room!
+                </div>
+        }
+        else
+        {
+                <div class="table-responsive">
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-white">
+                                <th scope="col">Room Name</th>
+                                <th scope="col">Capacity</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model)
+                        {
+                                    <tr>
+                                        <td>
+                                            <i class="fa fa-door-open text-primary me-2"></i>
+                                            <strong>@item.Name</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">@item.Capacity people</span>
+                                        </td>
+                                        <td class="text-muted">@(item.Description ?? "N/A")</td>
+                                        <td>
+                                    @if (item.IsActive)
+                                    {
+                                                    <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                                    <span class="badge bg-danger">Inactive</span>
+                                    }
+                                        </td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a class="btn btn-sm btn-light" asp-action="Details" asp-route-id="@item.RoomId">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@item.RoomId">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.RoomId">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                        }
+                                            </div>
+                                        </td>
+                                    </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+        }
+    </div>
+</div>

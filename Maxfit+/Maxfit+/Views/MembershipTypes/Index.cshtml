@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Maxfit_.Models.MembershipType>
+
+@{
+    ViewData["Title"] = "Membership Plans";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-primary"><i class="fa fa-id-card me-2"></i>Membership Plans</h6>
+            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus me-2"></i>Create New Plan</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Plan Name</th>
+                        <th scope="col">Duration (Days)</th>
+                        <th scope="col">Price</th> @* Yeni eklediğimiz Fiyat sütunu *@
+                        <th scope="col">Description</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-white fw-bold">@item.Name</td>
+                            <td>@item.DurationInDays Days</td>
+                            @* Fiyatı para birimi formatında gösteriyoruz *@
+                            <td class="text-primary fw-bold">@item.Price.ToString("C2")</td>
+                            <td>@item.Description</td>
+                            <td>
+                                <span class="badge @(item.IsActive ? "bg-success" : "bg-danger")">
+                                    @(item.IsActive ? "Active" : "Passive")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@item.MembershipTypeId"><i class="fa fa-edit"></i></a>
+                                    <a class="btn btn-sm btn-primary" asp-action="Delete" asp-route-id="@item.MembershipTypeId" onclick="return confirm('Are you sure?')"><i class="fa fa-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

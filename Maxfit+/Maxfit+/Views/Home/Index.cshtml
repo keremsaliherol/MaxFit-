@@ -1,0 +1,426 @@
+﻿@model IEnumerable<Maxfit_.Models.Member>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <!-- Statistics Cards Row -->
+    <div class="row g-4">
+
+        <!-- Today's Check-ins -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-user-check fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2 text-white">Today's Check-ins</p>
+                    <h4 class="mb-0 text-primary">@ViewBag.TodayCheckIns</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Members -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-users fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2 text-white">Total Members</p>
+                    <h4 class="mb-0 text-primary">@ViewBag.TotalMembers</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Members -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-user-plus fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2 text-white">Active Members</p>
+                    <h4 class="mb-0 text-primary">@ViewBag.ActiveMembers</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Equipment -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                <i class="fa fa-cogs fa-3x text-primary"></i>
+                <div class="ms-3">
+                    <p class="mb-2 text-white">Total Equipment</p>
+                    <h4 class="mb-0 text-primary">@ViewBag.TotalEquipment</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Revenue -->
+        <div class="col-sm-6 col-xl-3">
+            <div
+                class="bg-secondary rounded d-flex align-items-center justify-content-between p-4 border border-success">
+                <i class="fa fa-dollar-sign fa-3x text-success"></i>
+                <div class="ms-3">
+                    <p class="mb-2 text-white">Today's Revenue</p>
+                    <h4 class="mb-0 text-success">$@(ViewBag.TodayRevenue ?? 0)</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- This Month Revenue -->
+        <div class="col-sm-6 col-xl-3">
+            <div
+                class="bg-secondary rounded d-flex align-items-center justify-content-between p-4 border border-success">
+                <i class="fa fa-credit-card fa-3x text-success"></i>
+                <div class="ms-3">
+                    <p class="mb-2 text-white">This Month</p>
+                    <h4 class="mb-0 text-success">$@(ViewBag.MonthRevenue ?? 0)</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Payments -->
+        <div class="col-sm-6 col-xl-3">
+            <div
+                class="bg-secondary rounded d-flex align-items-center justify-content-between p-4 border border-warning">
+                <i class="fa fa-clock fa-3x text-warning"></i>
+                <div class="ms-3">
+                    <p class="mb-2 text-white">Pending Payments</p>
+                    <h4 class="mb-0 text-warning">@(ViewBag.PendingPayments ?? 0)</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- View All Payments -->
+        <div class="col-sm-6 col-xl-3">
+            <a asp-controller="Payments" asp-action="Index" class="text-decoration-none">
+                <div
+                    class="bg-secondary rounded d-flex align-items-center justify-content-between p-4 border border-info hover-lift">
+                    <i class="fa fa-list-alt fa-3x text-info"></i>
+                    <div class="ms-3">
+                        <p class="mb-2 text-white">View All</p>
+                        <h6 class="mb-0 text-info">Payments →</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Quick Action Buttons -->
+<div class="container-fluid pt-4 px-4">
+    <h6 class="mb-3 text-white">
+        <i class="fa fa-bolt me-2 text-warning"></i>Quick Actions
+    </h6>
+    <div class="row g-3">
+
+        <!-- Add Member -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="Members" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-primary">
+                    <i class="fa fa-user-plus fa-2x text-primary mb-2"></i>
+                    <h6 class="text-white mb-0">Add Member</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- Add Class -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="Classes" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-info">
+                    <i class="fa fa-dumbbell fa-2x text-info mb-2"></i>
+                    <h6 class="text-white mb-0">Add Class</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- Add Course Session -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="CourseSessions" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-success">
+                    <i class="fa fa-calendar-plus fa-2x text-success mb-2"></i>
+                    <h6 class="text-white mb-0">Schedule Session</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- View Weekly Schedule -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="CourseSessions" asp-action="WeeklySchedule" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-primary">
+                    <i class="fa fa-calendar-week fa-2x text-primary mb-2"></i>
+                    <h6 class="text-white mb-0">Weekly Schedule</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- Add Room -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="Rooms" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-info">
+                    <i class="fa fa-door-open fa-2x text-info mb-2"></i>
+                    <h6 class="text-white mb-0">Add Room</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- Add Staff -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="Staff" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-warning">
+                    <i class="fa fa-user-tie fa-2x text-warning mb-2"></i>
+                    <h6 class="text-white mb-0">Add Staff</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- Add Equipment -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="Equipments" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-danger">
+                    <i class="fa fa-tools fa-2x text-danger mb-2"></i>
+                    <h6 class="text-white mb-0">Add Equipment</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- Record Payment -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="Payments" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-success">
+                    <i class="fa fa-money-bill-wave fa-2x text-success mb-2"></i>
+                    <h6 class="text-white mb-0">Record Payment</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- Add Membership Type -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="MembershipTypes" asp-action="Create" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-info">
+                    <i class="fa fa-tags fa-2x text-info mb-2"></i>
+                    <h6 class="text-white mb-0">Add Membership Type</h6>
+                </div>
+            </a>
+        </div>
+
+        <!-- View All Check-ins -->
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <a asp-controller="CheckIns" asp-action="Index" class="text-decoration-none">
+                <div class="bg-secondary rounded p-3 text-center hover-scale border-start border-4 border-primary">
+                    <i class="fa fa-clipboard-check fa-2x text-primary mb-2"></i>
+                    <h6 class="text-white mb-0">View Check-ins</h6>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- Gender Distribution Chart -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4 text-white">
+                    <i class="fa fa-chart-pie me-2 text-primary"></i>Member Gender Distribution
+                </h6>
+                <canvas id="genderChart"></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-xl-6">
+            <div class="bg-secondary rounded h-100 p-4">
+                <h6 class="mb-4 text-white">
+                    <i class="fa fa-info-circle me-2 text-primary"></i>Gender Statistics
+                </h6>
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-dark rounded">
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-male fa-2x text-primary me-3"></i>
+                            <span class="text-white">Male Members</span>
+                        </div>
+                        <h4 class="mb-0 text-primary">@ViewBag.MaleCount</h4>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-dark rounded">
+                        <div class="d-flex align-items-center">
+                            <i class="fa fa-female fa-2x text-danger me-3"></i>
+                            <span class="text-white">Female Members</span>
+                        </div>
+                        <h4 class="mb-0 text-danger">@ViewBag.FemaleCount</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Today's Classes Section -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-white">
+                <i class="fa fa-calendar-day me-2 text-primary"></i>Today's Classes
+            </h6>
+            <a asp-controller="CourseSessions" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Time</th>
+                        <th scope="col">Class Name</th>
+                        <th scope="col">Capacity</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.TodayActiveSessions != null && ViewBag.TodayActiveSessions.Count > 0)
+                    {
+                        @foreach (var session in ViewBag.TodayActiveSessions)
+                        {
+                            <tr>
+                                <td>@session.StartTime.ToString("HH:mm") - @session.EndTime.ToString("HH:mm")</td>
+                                <td>@session.Class?.Name</td>
+                                <td>@session.Capacity</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-3 text-muted">No sessions scheduled for today.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Members -->
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-white">
+                <i class="fa fa-users me-2 text-primary"></i>Recent Members
+            </h6>
+            <a asp-controller="Members" asp-action="Index" class="btn btn-sm btn-outline-primary">Show All</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Registered</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var member in Model.Take(5))
+                        {
+                            <tr>
+                                <td>@member.FirstName @member.LastName</td>
+                                <td>@member.Email</td>
+                                <td>@member.RegisterDate.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    @if (member.IsActive)
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Inactive</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-3 text-muted">No members found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .hover-scale {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gender Distribution Pie Chart
+    const genderData = {
+        labels: ['Male', 'Female'],
+        datasets: [{
+            data: [@ViewBag.MaleCount, @ViewBag.FemaleCount],
+            backgroundColor: [
+                'rgba(13, 110, 253, 0.8)',  // Blue for Male
+                'rgba(220, 53, 69, 0.8)'    // Red for Female
+            ],
+            borderColor: [
+                'rgba(13, 110, 253, 1)',
+                'rgba(220, 53, 69, 1)'
+            ],
+            borderWidth: 2
+        }]
+    };
+
+    const genderConfig = {
+        type: 'pie',
+        data: genderData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#fff',
+                        font: {
+                            size: 14
+                        },
+                        padding: 15
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            let label = context.label || '';
+                            let value = context.parsed || 0;
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let percentage = ((value / total) * 100).toFixed(1);
+                            return label + ': ' + value + ' (' + percentage + '%)';
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    // Render chart
+    const genderChart = new Chart(
+        document.getElementById('genderChart'),
+        genderConfig
+    );
+</script>

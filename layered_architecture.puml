@@ -1,0 +1,78 @@
+@startuml Maxfit_Layered_Architecture
+
+skinparam componentStyle rectangle
+skinparam defaultFontSize 11
+skinparam component {
+    BackgroundColor #E8F5E9
+    BorderColor #43A047
+}
+
+skinparam package {
+    BackgroundColor #FFF3E0
+    BorderColor #FF6F00
+    FontStyle bold
+}
+
+title System Architecture - Layered Model (Maxfit+)
+
+package "PRESENTATION LAYER" {
+    [Member Dashboard\nInterface] as MemberUI
+    [Class Scheduling\nInterface] as ClassUI
+    [Payment\nInterface] as PaymentUI
+    [Reports Dashboard\nInterface] as ReportUI
+}
+
+package "CONTROLLER LAYER" {
+    [Members\nController] as MemberCtrl
+    [CourseSessions\nController] as ClassCtrl
+    [Payments\nController] as PaymentCtrl
+    [Reports\nController] as ReportCtrl
+}
+
+package "SERVICE LAYER" {
+    [Member\nService] as MemberSvc
+    [Class Scheduling\nService] as ClassSvc
+    [Payment\nService] as PaymentSvc
+    [Check-in\nService] as CheckinSvc
+}
+
+package "DATA ACCESS LAYER" {
+    [Member\nRepository] as MemberRepo
+    [Class\nRepository] as ClassRepo
+    [Payment\nRepository] as PaymentRepo
+    [Attendance\nRepository] as AttendanceRepo
+}
+
+package "DATA LAYER" {
+    database "SQL Server Database\n(Members, Classes,\nPayments, Attendance)" as DB
+    component "File Storage\n(Profile Photos)" as FileStorage
+}
+
+' Presentation to Controller connections
+MemberUI -down-> MemberCtrl
+ClassUI -down-> ClassCtrl
+PaymentUI -down-> PaymentCtrl
+ReportUI -down-> ReportCtrl
+
+' Controller to Service connections
+MemberCtrl -down-> MemberSvc
+ClassCtrl -down-> ClassSvc
+PaymentCtrl -down-> PaymentSvc
+ReportCtrl -down-> CheckinSvc
+
+' Service to Data Access connections
+MemberSvc -down-> MemberRepo
+ClassSvc -down-> ClassRepo
+PaymentSvc -down-> PaymentRepo
+CheckinSvc -down-> AttendanceRepo
+
+' Data Access to Data Layer connections
+MemberRepo -down-> DB
+ClassRepo -down-> DB
+PaymentRepo -down-> DB
+AttendanceRepo -down-> DB
+
+' File Storage connection
+MemberRepo -down-> FileStorage
+
+@enduml

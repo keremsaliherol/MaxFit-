@@ -1,0 +1,139 @@
+@startuml Hardware_Architecture_Connectivity
+
+!define CLOUDCOLOR #E3F2FD
+!define SERVERCOLOR #C8E6C9
+!define NETWORKCOLOR #FFF9C4
+!define STORAGECOLOR #F8BBD0
+
+skinparam cloud {
+    BackgroundColor CLOUDCOLOR
+    BorderColor #1976D2
+}
+
+skinparam node {
+    BackgroundColor SERVERCOLOR
+    BorderColor #388E3C
+}
+
+skinparam component {
+    BackgroundColor #FFFFFF
+    BorderColor #757575
+}
+
+skinparam database {
+    BackgroundColor STORAGECOLOR
+    BorderColor #C2185B
+}
+
+title Hardware Architecture - Connectivity Diagram (Maxfit+)
+
+cloud "Internet" as Internet
+
+node "External Access\n(Members/Staff)" as External {
+}
+
+node "Fitness Center Entrance" as Entrance {
+    component "Reception Kiosk\nCheck-in/Check-out" as Kiosk
+}
+
+node "Main Network Switch\n(Core Distribution)" as CoreSwitch {
+}
+
+package "Server Room - IT Infrastructure" as ServerRoom {
+    node "Core Network Center" as CoreNetwork {
+        component "Application Server 1\n[ASP.NET Core 9.0\nKestrel Web Server]" as AppServer1
+        component "Application Server 2\n[Load Balancing\nHigh Availability]" as AppServer2
+    }
+    
+    node "Database Cluster" as DBCluster {
+        database "SQL Server Primary\n[Members, Classes,\nPayments, Attendance]" as DBPrimary
+        database "SQL Server Backup\n[Automatic Failover\nData Replication]" as DBBackup
+    }
+}
+
+package "Management Office - Administrative Area" as AdminArea {
+    node "Admin Workstation 1" as AdminWS1 {
+        component "Web Browser\nAdmin Dashboard" as AdminBrowser1
+    }
+    
+    node "Admin Workstation 2" as AdminWS2 {
+        component "Web Browser\nAdmin Dashboard" as AdminBrowser2
+    }
+}
+
+package "Front Desk - Staff Area" as StaffArea {
+    node "Staff Workstation 1" as StaffWS1 {
+        component "Web Browser\nStaff Dashboard" as StaffBrowser1
+    }
+    
+    node "Staff Workstation 2" as StaffWS2 {
+        component "Web Browser\nStaff Dashboard" as StaffBrowser2
+    }
+}
+
+node "Wireless Access Points" as WiFi {
+    component "Member Devices\n(Smartphones,\nTablets, Laptops)" as MemberDevices
+}
+
+database "NAS Storage\n[Profile Photos\nBackups\nDocuments]" as NAS
+
+node "Network Security" as Security {
+    component "Firewall\nIDS/IPS" as Firewall
+    component "Monitoring\nTools" as Monitoring
+}
+
+' Internet connections
+Internet -down-> External : "HTTPS"
+External -down-> Firewall : "SSL/TLS"
+Firewall -down-> Entrance : "Secure Network"
+
+' Entrance to Core Switch
+Entrance -down-> CoreSwitch : "Gigabit Ethernet"
+
+' Core Switch to Server Room
+CoreSwitch -down-> CoreNetwork : "Fiber/Ethernet"
+CoreSwitch -down-> DBCluster : "Dedicated Link"
+
+' Core Switch to Areas
+CoreSwitch -right-> AdminArea : "VLAN - Admin"
+CoreSwitch -left-> StaffArea : "VLAN - Staff"
+CoreSwitch -down-> WiFi : "Wireless Network"
+
+' Application Servers to Database
+AppServer1 -down-> DBPrimary : "SQL Connection"
+AppServer2 -down-> DBPrimary : "SQL Connection"
+AppServer1 -down-> DBBackup : "Failover"
+AppServer2 -down-> DBBackup : "Failover"
+
+' Database Replication
+DBPrimary -right-> DBBackup : "Replication"
+
+' NAS Connections
+DBPrimary -down-> NAS : "Backup"
+DBBackup -down-> NAS : "Backup"
+AppServer1 -down-> NAS : "File Storage"
+AppServer2 -down-> NAS : "File Storage"
+
+' Security Monitoring
+Firewall -down-> Monitoring : "Logs"
+CoreSwitch -up-> Monitoring : "Traffic Monitor"
+
+note right of CoreSwitch
+  - QoS enabled for critical operations
+  - VLAN segmentation
+  - Gigabit Ethernet backbone
+end note
+
+note right of DBCluster
+  - Automatic failover
+  - ACID compliance
+  - Daily automated backups
+end note
+
+note right of Security
+  - 24/7 monitoring
+  - Real-time alerts
+  - Security audits
+end note
+
+@enduml

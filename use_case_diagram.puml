@@ -1,0 +1,126 @@
+@startuml Use_Case_Diagram_Maxfit
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Admin\nUser" as Admin
+actor "Staff/Trainer\nUser" as Staff
+actor "Member\nUser" as Member
+actor "External\nSystems" as External
+
+rectangle "Maxfit+ System" {
+    
+    package "Admin Module" #FFE6E6 {
+        usecase "Member Management" as UC1
+        usecase "Staff Management" as UC2
+        usecase "System Configuration" as UC3
+        usecase "Class Management" as UC4
+        usecase "Payment Management" as UC5
+        usecase "Equipment Management" as UC6
+        usecase "Financial Reports" as UC7
+    }
+    
+    package "UI/UX Module" #FFFFCC {
+        usecase "Admin Dashboard" as UI1
+        usecase "Staff Dashboard" as UI2
+        usecase "Member Dashboard" as UI3
+        usecase "Class Schedule View" as UI4
+        usecase "Payment Forms" as UI5
+        usecase "Report Visualization" as UI6
+    }
+    
+    package "Business Module" #CCE5FF {
+        usecase "Check-in/Check-out" as BIZ1
+        usecase "Class Registration" as BIZ2
+        usecase "Payment Processing" as BIZ3
+        usecase "Conflict Detection" as BIZ4
+        usecase "Capacity Management" as BIZ5
+        usecase "Attendance Tracking" as BIZ6
+    }
+    
+    package "Integration Module" #E6F3E6 {
+        usecase "Email Notifications" as INT1
+        usecase "SMS Gateway" as INT2
+        usecase "Payment Gateway" as INT3
+        usecase "Identity Provider" as INT4
+        usecase "File Storage" as INT5
+    }
+}
+
+' Admin connections
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UI1
+Admin --> UI6
+
+' Staff connections
+Staff --> UC4
+Staff --> UC5
+Staff --> BIZ1
+Staff --> BIZ2
+Staff --> BIZ6
+Staff --> UI2
+Staff --> UI4
+
+' Member connections
+Member --> BIZ2
+Member --> UI3
+Member --> UI4
+
+' External Systems connections
+External --> INT1
+External --> INT2
+External --> INT3
+External --> INT4
+
+' Module interactions (extends/includes relationships)
+UC1 ..> BIZ2 : <<uses>>
+UC4 ..> BIZ4 : <<uses>>
+UC5 ..> BIZ3 : <<uses>>
+BIZ1 ..> BIZ6 : <<uses>>
+BIZ2 ..> BIZ5 : <<uses>>
+
+UI1 ..> UC7 : <<uses>>
+UI2 ..> BIZ1 : <<uses>>
+UI3 ..> BIZ2 : <<uses>>
+UI4 ..> UC4 : <<uses>>
+UI5 ..> BIZ3 : <<uses>>
+
+BIZ3 ..> INT3 : <<uses>>
+INT1 ..> INT4 : <<uses>>
+UC1 ..> INT5 : <<uses>>
+
+note right of External
+  - Email Service Provider
+  - SMS Gateway (Future)
+  - Payment Processors
+  - ASP.NET Core Identity
+end note
+
+note left of Admin
+  Full system access
+  - CRUD operations
+  - Reports & Analytics
+  - System configuration
+end note
+
+note left of Staff
+  Limited access
+  - Assigned classes
+  - Member check-ins
+  - Class registrations
+end note
+
+note left of Member
+  Self-service
+  - Class browsing
+  - Profile management
+  - Payment history
+end note
+
+@enduml

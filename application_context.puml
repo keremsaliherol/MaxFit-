@@ -1,0 +1,78 @@
+@startuml Application_Context_Diagram
+
+!define RECTANGLE_COLOR #E8F5E9
+!define EXTERNAL_COLOR #FFF3E0
+!define DATABASE_COLOR #E3F2FD
+
+skinparam rectangle {
+    BackgroundColor RECTANGLE_COLOR
+    BorderColor #43A047
+    FontSize 11
+}
+
+skinparam component {
+    BackgroundColor #FFFFFF
+    BorderColor #1976D2
+    FontSize 10
+}
+
+skinparam database {
+    BackgroundColor DATABASE_COLOR
+    BorderColor #0D47A1
+}
+
+' External Systems
+package "External Systems" <<Rectangle>> #FFF3E0 {
+    component "ASP.NET Core\nIdentity Provider" as Identity
+    component "Email Service\nProvider (SMTP)" as Email
+    component "SMS Gateway\n(Future)" as SMS
+    component "Payment Gateway\n(Future)" as Payment
+}
+
+' Maxfit+ Core System
+package "Maxfit+ Fitness Management System" <<Rectangle>> {
+    component "Member Management\nModule" as MemberMgmt
+    component "Class Scheduling\nModule" as ClassScheduling
+    component "Payment Processing\nModule" as PaymentProc
+    component "Attendance Tracking\nModule" as AttendanceTrack
+    component "User Access Control\nModule" as AccessControl
+}
+
+' Data Stores
+database "Microsoft SQL Server\n(Members, Classes,\nPayments, Attendance)" as SQLDB
+component "File Storage System\n(Profile Photos,\nDocuments)" as FileStorage
+component "Session Storage\n(Auth Tokens)" as SessionStore
+
+' Connections from External Systems
+Identity -down-> AccessControl : "Authenticate\nUsers"
+Email -down-> MemberMgmt : "Send Membership\nNotifications"
+Email -down-> ClassScheduling : "Class Reminders"
+SMS -down-> MemberMgmt : "SMS Alerts"
+Payment -down-> PaymentProc : "Process Online\nPayments"
+
+' Connections to Database
+MemberMgmt -down-> SQLDB : "CRUD Members\n& Memberships"
+ClassScheduling -down-> SQLDB : "Manage Schedules,\nTrainers, Rooms"
+PaymentProc -down-> SQLDB : "Track Transactions\n& Revenue"
+AttendanceTrack -down-> SQLDB : "Log Check-ins\n& Analytics"
+AccessControl -down-> SQLDB : "Validate Roles\n& Permissions"
+
+' File Storage Connections
+MemberMgmt -down-> FileStorage : "Store Profile\nPhotos"
+
+' Session Management
+AccessControl -down-> SessionStore : "Manage User\nSessions"
+
+' Internal Module Interactions
+AccessControl -right-> MemberMgmt : "Authorize Access"
+AccessControl -right-> ClassScheduling : "Authorize Access"
+AccessControl -right-> PaymentProc : "Authorize Access"
+AccessControl -right-> AttendanceTrack : "Authorize Access"
+
+MemberMgmt -right-> ClassScheduling : "Member Class\nRegistrations"
+ClassScheduling -right-> AttendanceTrack : "Session Attendance\nTracking"
+MemberMgmt -right-> PaymentProc : "Process Member\nPayments"
+
+title Application Context Diagram - Maxfit+ Fitness Management System
+
+@enduml

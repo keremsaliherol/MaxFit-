@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Maxfit_.Models.Member>
+
+@{
+    ViewData["Title"] = "Member List";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h6 class="mb-0 text-primary"><i class="fa fa-users me-2"></i>Member Management</h6>
+            <a asp-action="Create" class="btn btn-primary"><i class="fa fa-plus me-2"></i>Add New Member</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col">Full Name</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Membership Plan</th>
+                        <th scope="col">Register Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.PhotoUrl))
+                                {
+                                    <img src="@item.PhotoUrl" alt="@item.FirstName" class="rounded-circle me-2"
+                                        style="width: 40px; height: 40px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <i class="fa fa-user-circle fa-2x text-muted me-2"></i>
+                                }
+                                @item.FirstName @item.LastName
+                            </td>
+                            <td>@item.Phone</td>
+                            <td>@item.Email</td>
+                            <td>@(item.MembershipType?.Name ?? "N/A")</td>
+                            <td>@item.RegisterDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Passive</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@item.MemberId"
+                                        title="Edit Member">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@item.MemberId"
+                                        title="View Details">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.MemberId"
+                                        title="Delete Member">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

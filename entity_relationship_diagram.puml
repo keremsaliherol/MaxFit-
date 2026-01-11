@@ -1,0 +1,188 @@
+@startuml Entity_Relationship_Diagram_Maxfit
+
+!define TABLE(x) class x << (T,#FFAAAA) >>
+!define PRIMARY_KEY(x) <b>x</b>
+!define FOREIGN_KEY(x) <i>x</i>
+
+skinparam class {
+    BackgroundColor #E8F5E9
+    BorderColor #43A047
+    ArrowColor #1976D2
+}
+
+' Identity and User Management
+class IdentityUser {
+    + PRIMARY_KEY(UserId) : string
+    + Email : string
+    + PasswordHash : string
+    + PhoneNumber : string
+}
+
+class IdentityRole {
+    + PRIMARY_KEY(RoleId) : string
+    + RoleName : string
+}
+
+class UserRole {
+    + FOREIGN_KEY(UserId) : string
+    + FOREIGN_KEY(RoleId) : string
+}
+
+' Member Management
+class Member {
+    + PRIMARY_KEY(MemberId) : int
+    + FirstName : string
+    + LastName : string
+    + Email : string
+    + Phone : string
+    + BirthDate : DateOnly
+    + Gender : string
+    + RegisterDate : DateTime
+    + IsActive : bool
+    + PhotoUrl : string
+    + FOREIGN_KEY(MembershipTypeId) : int
+    + FOREIGN_KEY(UserId) : string
+}
+
+class MembershipType {
+    + PRIMARY_KEY(MembershipTypeId) : int
+    + Name : string
+    + Description : string
+    + DurationMonths : int
+    + Price : decimal
+}
+
+class Membership {
+    + PRIMARY_KEY(MembershipId) : int
+    + FOREIGN_KEY(MemberId) : int
+    + FOREIGN_KEY(MembershipTypeId) : int
+    + StartDate : DateTime
+    + EndDate : DateTime
+    + IsActive : bool
+}
+
+' Staff Management
+class Staff {
+    + PRIMARY_KEY(StaffId) : int
+    + FirstName : string
+    + LastName : string
+    + Email : string
+    + Phone : string
+    + Position : string
+    + HireDate : DateOnly
+    + IsActive : bool
+    + FOREIGN_KEY(UserId) : string
+}
+
+' Class and Session Management
+class Class {
+    + PRIMARY_KEY(ClassId) : int
+    + ClassName : string
+    + Description : string
+    + ClassType : string
+}
+
+class Room {
+    + PRIMARY_KEY(RoomId) : int
+    + RoomName : string
+    + Capacity : int
+    + Floor : int
+}
+
+class CourseSession {
+    + PRIMARY_KEY(CourseSessionId) : int
+    + FOREIGN_KEY(ClassId) : int
+    + FOREIGN_KEY(RoomId) : int
+    + FOREIGN_KEY(TrainerId) : int
+    + StartTime : DateTime
+    + EndTime : DateTime
+    + Capacity : int
+    + IsCanceled : bool
+    + Notes : string
+}
+
+class CourseRegistration {
+    + PRIMARY_KEY(CourseRegistrationId) : int
+    + FOREIGN_KEY(MemberId) : int
+    + FOREIGN_KEY(CourseSessionId) : int
+    + RegistrationDate : DateTime
+    + Status : string
+}
+
+' Payment Management
+class Payment {
+    + PRIMARY_KEY(PaymentId) : int
+    + FOREIGN_KEY(MemberId) : int
+    + FOREIGN_KEY(MembershipId) : int
+    + Amount : decimal
+    + PaymentDate : DateTime
+    + PaymentMethod : string
+    + Status : string
+    + TransactionId : string
+    + Notes : string
+}
+
+' Attendance Tracking
+class CheckIn {
+    + PRIMARY_KEY(CheckInId) : int
+    + FOREIGN_KEY(MemberId) : int
+    + CheckInTime : DateTime
+    + CheckOutTime : DateTime?
+}
+
+' Equipment Management
+class Equipment {
+    + PRIMARY_KEY(EquipmentId) : int
+    + Name : string
+    + Category : string
+    + PurchaseDate : DateTime
+    + Status : string
+}
+
+class EquipmentMaintenance {
+    + PRIMARY_KEY(MaintenanceId) : int
+    + FOREIGN_KEY(EquipmentId) : int
+    + MaintenanceDate : DateTime
+    + Description : string
+    + Cost : decimal
+}
+
+' Notifications
+class MemberNotification {
+    + PRIMARY_KEY(NotificationId) : int
+    + FOREIGN_KEY(MemberId) : int
+    + Message : string
+    + SentDate : DateTime
+    + IsRead : bool
+}
+
+' Relationships - Identity
+IdentityUser "1" -- "0..*" UserRole
+IdentityRole "1" -- "0..*" UserRole
+IdentityUser "1" -- "0..1" Member : links to >
+IdentityUser "1" -- "0..1" Staff : links to >
+
+' Relationships - Member and Membership
+Member "0..*" -- "1" MembershipType : has current >
+Member "1" -- "0..*" Membership : owns >
+MembershipType "1" -- "0..*" Membership : defines >
+
+' Relationships - Member Activities
+Member "1" -- "0..*" CourseRegistration : registers >
+Member "1" -- "0..*" Payment : makes >
+Member "1" -- "0..*" CheckIn : performs >
+Member "1" -- "0..*" MemberNotification : receives >
+
+' Relationships - Class and Sessions
+Class "1" -- "0..*" CourseSession : scheduled as >
+Room "1" -- "0..*" CourseSession : hosts >
+Staff "1" -- "0..*" CourseSession : trains >
+CourseSession "1" -- "0..*" CourseRegistration : has >
+
+' Relationships - Payment
+Membership "1" -- "0..*" Payment : paid for >
+
+' Relationships - Equipment
+Equipment "1" -- "0..*" EquipmentMaintenance : maintained by >
+
+@enduml

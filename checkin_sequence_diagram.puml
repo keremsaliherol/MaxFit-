@@ -1,0 +1,134 @@
+@startuml Check_In_Sequence_Diagram_Maxfit
+
+skinparam sequence {
+    ArrowColor #1976D2
+    ActorBorderColor #43A047
+    ActorBackgroundColor #E8F5E9
+    ParticipantBorderColor #FF6F00
+    ParticipantBackgroundColor #FFF3E0
+}
+
+title Check-In/Check-Out Sequence Diagram (Maxfit+)
+
+actor "Staff/Admin" as Staff
+participant "Browser" as Browser
+participant "CheckInsController" as Controller
+participant "CheckIn Service" as Service
+participant "CheckIn Repository" as Repo
+participant "Member Repository" as MemberRepo
+database "SQL Server\nDatabase" as DB
+
+== Check-In Process ==
+
+Staff -> Browser: Scan member ID/QR code\nor enter Member ID
+activate Browser
+
+Browser -> Controller: POST /CheckIns/Create
+activate Controller
+
+Controller -> MemberRepo: GetMemberByIdAsync(memberId)
+activate MemberRepo
+
+MemberRepo -> DB: Query Member
+activate DB
+DB --> MemberRepo: Return Member record
+deactivate DB
+
+alt Member Found and Active
+    MemberRepo --> Controller: Member data
+    deactivate MemberRepo
+    
+    Controller -> Service: CheckIfAlreadyCheckedIn(memberId)
+    activate Service
+    
+    Service -> Repo: GetActiveCheckInAsync(memberId)
+    activate Repo
+    Repo -> DB: Query CheckIn WHERE\nMemberId = X AND CheckOutTime IS NULL
+    activate DB
+    DB --> Repo: Return CheckIn record or null
+    deactivate DB
+    Repo --> Service: CheckIn record or null
+    deactivate Repo
+    
+    alt Already Checked In
+        Service --> Controller: Error: Already checked in
+        deactivate Service
+        Controller --> Browser: Return error message
+        Browser --> Staff: Display error\n"Member already checked in"
+        deactivate Browser
+        deactivate Controller
+        
+    else Not Checked In
+        Service --> Controller: OK to check in
+        deactivate Service
+        
+        Controller -> Service: CreateCheckInAsync(memberId)
+        activate Service
+        Service -> Service: Create CheckIn record\n(CheckInTime = DateTime.Now)
+        Service -> Repo: AddAsync(checkIn)
+        activate Repo
+        Repo -> DB: INSERT INTO CheckIns
+        activate DB
+        DB --> Repo: Success
+        deactivate DB
+        Repo --> Service: CheckIn created
+        deactivate Repo
+        Service --> Controller: CheckIn record
+        deactivate Service
+        
+        Controller --> Browser: Redirect to CheckIns/Index\nwith success message
+        deactivate Controller
+        Browser --> Staff: Display success\n"Check-in successful"
+        deactivate Browser
+    end
+    
+else Member Not Found or Inactive
+    MemberRepo --> Controller: null or Inactive member
+    deactivate MemberRepo
+    Controller --> Browser: Return error message
+    deactivate Controller
+    Browser --> Staff: Display error\n"Invalid member or membership expired"
+    deactivate Browser
+end
+
+== Check-Out Process ==
+
+Staff -> Browser: Select member to check out
+activate Browser
+
+Browser -> Controller: POST /CheckIns/CheckOut/{id}
+activate Controller
+
+Controller -> Service: CheckOutAsync(checkInId)
+activate Service
+
+Service -> Repo: GetByIdAsync(checkInId)
+activate Repo
+Repo -> DB: Query CheckIn by ID
+activate DB
+DB --> Repo: Return CheckIn record
+deactivate DB
+Repo --> Service: CheckIn record
+deactivate Repo
+
+Service -> Service: Update CheckIn\n(CheckOutTime = DateTime.Now)
+
+Service -> Repo: UpdateAsync(checkIn)
+activate Repo
+Repo -> DB: UPDATE CheckIns SET CheckOutTime
+activate DB
+DB --> Repo: Success
+deactivate DB
+Repo --> Service: Updated
+deactivate Repo
+
+Service --> Controller: CheckOut successful
+deactivate Service
+
+Controller --> Browser: Redirect with success message
+deactivate Controller
+
+Browser --> Staff: Display success\n"Check-out successful"
+deactivate Browser
+
+@enduml

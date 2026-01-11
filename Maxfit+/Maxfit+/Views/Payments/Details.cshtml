@@ -1,0 +1,103 @@
+@model Maxfit_.Models.Payment
+
+@{
+    ViewData["Title"] = "Payment Details";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-receipt"></i> Payment Details #@Model.PaymentId
+                    </h4>
+                    @{
+                        var statusBadge = Model.Status switch
+                        {
+                            "Completed" => "bg-success",
+                            "Pending" => "bg-warning text-dark",
+                            "Failed" => "bg-danger",
+                            "Refunded" => "bg-info",
+                            _ => "bg-secondary"
+                        };
+                    }
+                    <span class="badge @statusBadge fs-6">@Model.Status</span>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Payment ID</dt>
+                        <dd class="col-sm-8"><strong>#@Model.PaymentId</strong></dd>
+
+                        <dt class="col-sm-4">Member</dt>
+                        <dd class="col-sm-8">
+                            <a asp-controller="Members" asp-action="Details" asp-route-id="@Model.MemberId"
+                                class="text-decoration-none">
+                                <i class="bi bi-person-circle"></i>
+                                @Model.Member?.FirstName @Model.Member?.LastName
+                            </a>
+                        </dd>
+
+
+                        <dt class="col-sm-4">Amount</dt>
+                        <dd class="col-sm-8">
+                            <h4 class="text-success mb-0">$@Model.Amount.ToString("N2")</h4>
+                        </dd>
+
+                        <dt class="col-sm-4">Payment Date</dt>
+                        <dd class="col-sm-8">
+                            <i class="bi bi-calendar"></i> @Model.PaymentDate.ToString("MMMM dd, yyyy")
+                            <br />
+                            <small class="text-muted">@Model.PaymentDate.ToString("hh:mm tt")</small>
+                        </dd>
+
+                        <dt class="col-sm-4">Payment Method</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-secondary">@Model.PaymentMethod</span>
+                        </dd>
+
+                        @if (!string.IsNullOrEmpty(Model.TransactionId))
+                        {
+                            <dt class="col-sm-4">Transaction ID</dt>
+                            <dd class="col-sm-8">
+                                <code>@Model.TransactionId</code>
+                            </dd>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <dt class="col-sm-4">Notes</dt>
+                            <dd class="col-sm-8">
+                                <p class="text-muted mb-0">@Model.Notes</p>
+                            </dd>
+                        }
+
+                        <dt class="col-sm-4">Recorded On</dt>
+                        <dd class="col-sm-8">
+                            <small class="text-muted">
+                                <i class="bi bi-clock-history"></i> @Model.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")
+                            </small>
+                        </dd>
+                    </dl>
+
+                    <hr />
+
+                    <div class="d-flex gap-2">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.PaymentId" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@Model.PaymentId" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

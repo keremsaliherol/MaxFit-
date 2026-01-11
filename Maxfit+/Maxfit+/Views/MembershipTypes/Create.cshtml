@@ -1,0 +1,81 @@
+﻿@model Maxfit_.Models.MembershipType
+
+@{
+    ViewData["Title"] = "Create Membership Plan";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-sm-12 col-xl-7">
+            <div class="bg-secondary rounded h-100 p-4 border border-primary">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0 text-primary"><i class="fa fa-plus-circle me-2"></i>Create New Membership Plan</h6>
+                    <a asp-action="Index" class="btn btn-outline-primary btn-sm">Back to List</a>
+                </div>
+                
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label asp-for="Name" class="form-label text-white">Plan Name</label>
+                            <input asp-for="Name" class="form-control bg-dark text-white border-0" placeholder="e.g. Monthly Standard" required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DurationInDays" class="form-label text-white">Duration (Days)</label>
+                            <input asp-for="DurationInDays" type="number" class="form-control bg-dark text-white border-0" placeholder="30, 90, 365..." required />
+                            <span asp-validation-for="DurationInDays" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Price" class="form-label text-white">Price ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-primary border-0">$</span>
+                                <input asp-for="Price" type="number" step="0.01" class="form-control bg-dark text-white border-0" placeholder="0.00" required />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label asp-for="Description" class="form-label text-white">Description</label>
+                            <textarea asp-for="Description" class="form-control bg-dark text-white border-0" rows="2" placeholder="What includes in this plan?"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-12 mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                                <label class="form-check-label text-white" asp-for="IsActive">Set as Active Plan</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold uppercase">
+                            <i class="fa fa-save me-2"></i>SAVE MEMBERSHIP PLAN
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-xl-5">
+            <div class="bg-secondary rounded h-100 p-4 text-center d-flex flex-column justify-content-center border border-dark">
+                <i class="fa fa-info-circle fa-3x text-primary mb-3"></i>
+                <h5 class="text-white">Quick Reminder</h5>
+                <p class="text-muted">
+                    The <strong>Duration</strong> you set here will be used to automatically calculate the membership expiration date for new members. 
+                    The <strong>Price</strong> will be reflected in your financial reports and dashboard statistics.
+                </p>
+                <hr class="border-primary">
+                <p class="small text-white-50 italic">Note: Make sure to set the plan as "Active" if you want it to appear in the registration dropdown.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
